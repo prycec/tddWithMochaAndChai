@@ -1,4 +1,4 @@
 tddWithMocha
 ============
 
-Example files for interactive demo
+Example files for interactive demo.

@@ -38,7 +38,7 @@ In addition, Mocha provides a flexible UI, flexible reporting options and suppor
 
 ## Getting Started
 1. Clone the project from the Digital River gitHub server
-1. Change into the `tddWithMocha` directory
+1. Change into the project directory
 1. Install the project dependencies
 1. Start the Web server.
 1. View the results in a Web  browser

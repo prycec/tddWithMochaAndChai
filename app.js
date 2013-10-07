@@ -2,33 +2,40 @@
 /**
  * Module dependencies.
  */
-
 var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
+var main = require('./routes');
+var pd = require('./routes/pd');
 var http = require('http');
 var path = require('path');
-
+var dust = require('dustjs-linkedin');
+var cons = require('consolidate');
 var app = express();
 
+// app configuration
+// assign the dust engine to .html files
+app.engine("html", cons.dust);
+
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4500);
+
+// app configuration
+// assign the dust engine to .html files
+app.engine("html", cons.dust);
+
+// set .html as the default extension
+app.set('view engine', 'html');
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
+app.set('template_engine', "dust");
+app.use('/', app.router);
 app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.logger('dev'));
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
+// set up routes
+app.get("/", main.index);
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+// id is dynamic
+app.get('/product/:pid', pd.index);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,4 +1,4 @@
-#Test Drive Development (TDD) with Mocha
+#Test Driven Development (TDD) in JavaScript with Mocha
 
 ## What is this TDD We Keep Hearing About?
 A test-first software development process. TDD is characterized by a Red-Green-Refactor process.
@@ -37,10 +37,26 @@ Mocha provided several of the project goals for a testing framework:
 In addition, Mocha provides a flexible UI, flexible reporting options and support for running in a browser.
 
 ## Getting Started
+
+To run the example code, you will need to have Node.js and the Node Package Manager(NPM) installed. Please see 
+[The Node Website](http://nodejs.org/) for details on how to install Node. NPM should now install automatically with 
+recent versions of node. 
+
+To check to see if iNode and NPM are installed correctly, try this from the command line interface:
+
+```
+$ node -v
+v0.10.16
+$ npm -v
+v1.3.8
+```
+
+Once you hav Node installed, to run the examples:
+
 1. Clone the project from the Digital River gitHub server
 1. Change into the project directory
 1. Install the project dependencies
-1. Start the Web server.
+1. Start the Web server
 1. View the results in a Web  browser
 
 ```

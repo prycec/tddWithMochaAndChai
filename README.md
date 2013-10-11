@@ -1,7 +1,7 @@
 #Test Driven Development (TDD) in JavaScript with Mocha
 
 ## What is this TDD We Keep Hearing About?
-A test-first software development process. TDD is characterized by a Red-Green-Refactor process.
+A test-first software development process. TDD is characterized by a Red-Green-Refactor workflow.
 
 * Red: a developer writes an initially failing automated test case that defines a new function or a new feature.
 * Green: The developer produces the minimum amount of code to make the new test pass.

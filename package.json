@@ -11,6 +11,7 @@
         "mocha" : "",
         "dustjs-linkedin" : "2.x",
         "consolidate" : "",
-        "nodemon" : ""
+        "nodemon" : "",
+        "q" : ""
     }
 }

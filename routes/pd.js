@@ -40,7 +40,12 @@ function getProductDetails(pid) {
 }
 
 exports.index = function(req, res) {
-    res.send("called with product id: " + req.params.pid);
+    getProductDetails(req.params.pid)
+        .then(function(json) {
+            res.json(json);
+        }, function(err) {
+            res.json({"error" : err});
+        });
 };
 
 exports.getProductDetails = getProductDetails;

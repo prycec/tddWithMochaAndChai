@@ -10,11 +10,16 @@ describe("getProductDetails", function() {
          });
 
         it("should be vaild JSON", function(itIsDone) {
-            promise.then(function(data) {
-                // create
-                assert.ok(data.productInfo);
-                itIsDone();
-            });
+            promise
+                .then(function(data) {
+                    // create
+                    assert.ok(data.productInfo);
+                }, function(err) {
+                    assert.fail("expected valid json", err);
+                })
+                .done(function() {
+                    itIsDone();
+                });
         });
     })
 });

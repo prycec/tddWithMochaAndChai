@@ -9,12 +9,11 @@ function getProductDetails(pid) {
     var rOptions = {
         host: "store.digitalriver.com",
         port: '80',
-        path: "/store/cpryce/en_US/DisplayDRProductInfo/productID." + pid + "/content.name+detailImage+price+buyLink+shortDescription+longDescription+product.variation/output.json/version.2",
+        path: "/store/cpryce/en_US/DisplayDRProductInfo/productID." + pid + "/content.name+detailImage+price+buyLink+shortDescription+longDescription+product.variation/output.json/version.2/env=design",
         method: 'GET'
     };
 
     var deferred = new Q.defer();
-
     // all the async stuff goes here
     http.get(rOptions, function (xhr) {
         xhr.setEncoding('utf8');
@@ -26,11 +25,16 @@ function getProductDetails(pid) {
             try {
                 json = JSON.parse(stringBuffer);
             } catch (e) {
+                console.log(e)
                 deferred.reject("can't parse response as JSON");
             }
 
             deferred.resolve(json);
         });
+
+        xhr.on("error", function(e) {
+            deferred.reject(e);
+        })
     });
     return deferred.promise;
 }

@@ -68,3 +68,158 @@ Once you hav Node installed, to run the examples:
 
 Open a Web browser to http://localhost:4500
 
+##Mocha Tests
+All of the Mocha framework tests are in the **/test** directory. ``mocha-test.j`` is an example that illustrates the
+testing framework and the default assertion library that is installed with NodJS.
+
+### Starting the Automated Test Runner
+Stop the Web Server with ``CTRL+C`` if it is running, and type the following command in the Terminal:
+
+```
+> npm test
+```
+
+This will invoke the test runner and is equivalent to typing:
+
+```
+mocha -w --reporter spec
+```
+
+However, with the ``npm test`` command, mocha does not need to be installed globally.
+
+### The First Test Cases
+For purposes of illustration, we have decided that we want to create service to go and get Product Detail data from the
+GC Commerce platform. This service will have one public function, ``getProductDetails`` that will return a promise.
+When the promise is fulfilled, it will return a json data structure with a productInfo property.
+
+To create the test, it is first necessary to create a stub file for the product details service. To this, a file in the
+**/routes/** is added to file system as **/routes/pd.js**. We need to add a stub that we will build on.
+
+pd.js listing
+
+```javascript
+/*global exports*/
+// declare a function scoped to this block
+function getProductDetails(pid) {
+
+}
+
+// export a public interface (for testing)
+exports.getProductDetails = getProductDetails;
+```
+
+Next we will write the tests in Mocha using the BDD-style interface and Node's assert library. Save this file in the
+**/tests** directory as ``pd-test.js``.
+
+```javascript```
+/*global describe it*/
+
+var pd = require("../routes/pd");
+var assert = require("assert");
+
+describe("getProductDetails", function() {
+    var promise = pd.getProductDetails('281246600');
+
+    it("is a promise", function() {
+        assert.ok(promise.then);
+    });
+});
+
+```
+
+The first line pulls in the route file that we want to test with the public getProductDetails function. The second
+line includes Node's assert library.
+
+The enclosing ``describe()`` function takes a string and an anonymous function as the two arguments. It sets
+up a top level grouping for our spec reporter, allowing us to group our two related tests under a common header.
+
+Next, we call the function that we are testing, assigning the results to a variable ``promise``. According to the
+CommonJS/PromiseA API, the return value from ``getProductDetails`` should have a method name then. Our first test
+uses Duck-typing to establish that the method return the correct type of object.
+
+### RED - Green - Refactor
+Start the test runner with the command ``npm start``. Note the 8 passing tests and the one red test that is failing. Our
+stub method in ``pd.js`` does not return a promise.
+
+Let's resolve that now by writing the least amount of code that we can to make the test pass. Our new listing for
+``pd.js`` looks like this:
+
+```javascript
+/*global exports*/
+var Q = require('q');
+
+// declare a function scoped to this block
+function getProductDetails(pid) {
+    var deferred = new Q.defer();
+
+    // do async request here.
+    return deferred.promise;
+}
+
+exports.getProductDetails  = getProductDetails;
+```
+
+Our first line pulls in the library that will provide the framework for Promise API, Q. Line five, constructs the promise
+object. and line 8 we return the read-only token to the test.
+
+Now our test passes, and we can begin to write our second test.
+
+Directly below our first test, add the following lines of code:
+
+```javascript
+    it("should be vaild JSON", function(itIsDone) {
+        promise
+            .then(function(data) {
+                assert.ok(data.productInfo);
+            }, function(err) {
+                assert.fail("expected valid json", err);
+            })
+            .done(function() {
+                itIsDone();
+            });
+    });
+```
+
+Now we are testing when the promise is fulfilled in our async function that the data returned is json date with a
+non-null ``productInfo`` property. When the file is saved and the test suite runs again, we now have 9 passing tests
+and one red one. Time to fix that. I won't go into the details, but here is the complete product details function that
+should pass the second test, and return json data
+
+```javascript
+function getProductDetails(pid) {
+    var deferred = new Q.defer();
+    var stringBuffer = "";
+    var json = {};
+    var rOptions = {
+        host: "store.digitalriver.com",
+        port: '80',
+        path: "/store/cpryce/en_US/DisplayDRProductInfo/productID." + pid + "/content.name+detailImage+price+buyLink+shortDescription+longDescription+product.variation/output.json/version.2/env=design",
+        method: 'GET'
+    };
+
+    http.get(rOptions, function (xhr) {
+        xhr.setEncoding('utf8');
+
+        xhr.on('data', function (chunk) {
+            stringBuffer += chunk;
+        });
+
+        xhr.on('end', function () {
+            try {
+                json = JSON.parse(stringBuffer);
+            } catch (e) {
+                deferred.reject("can't parse response as JSON");
+            }
+
+            deferred.resolve(json);
+        });
+
+        xhr.on("error", function(e) {
+            deferred.reject(e);
+        })
+    });
+    return deferred.promise;
+}
+```
+
+

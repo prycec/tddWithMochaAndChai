@@ -1,9 +1,9 @@
 /*global exports*/
-
 var Q = require("q"),
         http = require("http");
 
 function getProductDetails(pid) {
+    var deferred = new Q.defer();
     var stringBuffer = "";
     var json = {};
     var rOptions = {
@@ -13,10 +13,9 @@ function getProductDetails(pid) {
         method: 'GET'
     };
 
-    var deferred = new Q.defer();
-    // all the async stuff goes here
     http.get(rOptions, function (xhr) {
         xhr.setEncoding('utf8');
+
         xhr.on('data', function (chunk) {
             stringBuffer += chunk;
         });
@@ -25,7 +24,6 @@ function getProductDetails(pid) {
             try {
                 json = JSON.parse(stringBuffer);
             } catch (e) {
-                console.log(e)
                 deferred.reject("can't parse response as JSON");
             }
 

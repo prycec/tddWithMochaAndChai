@@ -180,7 +180,7 @@ Directly below our first test, add the following lines of code:
     });
 ```
 
-Now we are testing when the promise is fulfilled in our async function that the data returned is json date with a
+Now we are testing when the promise is fulfilled in our async function that the data returned is json data with a
 non-null ``productInfo`` property. When the file is saved and the test suite runs again, we now have 9 passing tests
 and one red one. Time to fix that. I won't go into the details, but here is the complete product details function that
 should pass the second test, and return json data

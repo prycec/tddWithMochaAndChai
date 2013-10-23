@@ -257,11 +257,11 @@ service should look like this:
 }
 ```
 
-1. PIDs should contain only numbers. Write a test that expects ``getProdcutDetails`` to return a JSON object with
+1. **PIDs should contain only numbers.** Write a test that expects ``getProdcutDetails`` to return a JSON object with
 Error.error === "Invalid PID", and the message "Product IDs should only contain numbers."
-2. PID should be at least 9 characters in length. Write a test that expects ``getProductDetails`` to return an error
+2. **PID should be at least 9 characters in length.** Write a test that expects ``getProductDetails`` to return an error
 object to cover this condition.
-3. Prodcut ID does not exist. The third product link contains a PID for a product that does not exist on this site. 
+3. **Prodcut ID does not exist.** The third product link contains a PID for a product that does not exist on this site. 
 The JSON that is produces by this code does not match other error messages. Write a test that expects ``getProductDetails``
 to normalize the error message.
 

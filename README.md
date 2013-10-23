@@ -137,7 +137,7 @@ Next, we call the function that we are testing, assigning the results to a varia
 CommonJS/PromiseA API, the return value from ``getProductDetails`` should have a method name then. Our first test
 uses Duck-typing to establish that the method return the correct type of object.
 
-### ReD - Green - Refactor
+### Red - Green - Refactor
 Start the test runner with the command ``npm start``. Note the 8 passing tests and the one red test that is failing. Our
 stub method in ``pd.js`` does not return a promise.
 

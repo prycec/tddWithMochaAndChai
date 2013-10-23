@@ -162,7 +162,7 @@ exports.getProductDetails  = getProductDetails;
 Our first line pulls in the library that will provide the framework for Promise API, Q. Line five, constructs the promise
 object. and line 8 we return the read-only token to the test.
 
-Now our test passes, and we can begin to write our second test.
+With this new code, our  first test passes, and we can begin to write our second test.
 
 Directly below our first test, add the following lines of code:
 
@@ -181,8 +181,13 @@ Directly below our first test, add the following lines of code:
 ```
 
 Now we are testing when the promise is fulfilled in our async function that the data returned is json data with a
-non-null ``productInfo`` property. When the file is saved and the test suite runs again, we now have 9 passing tests
-and one red one. Time to fix that. I won't go into the details, but here is the complete product details function that
+non-null ``productInfo`` property. 
+
+You may also notice in our second test, we are taking a parameter to the anonymous function that we are passing as the second argument to ``it()``. This is a signal to the Mocha framework that the test is an asynchronous test. The final step in the Promise chain, the ``.done()`` method invokes this callback, signalling Mocha that the asynchronous test is complete.
+
+When the file is saved and the test suite runs again, we now have 9 passing tests and one red one. Time to fix that. 
+
+I won't go into the details, but here is the complete product details function that
 should pass the second test, and return json data
 
 ```javascript
@@ -221,5 +226,43 @@ function getProductDetails(pid) {
     return deferred.promise;
 }
 ```
+
+##Next Steps
+Add a route to the ``pd.js`` file to return JSON to a web browser: 
+
+```javascript
+exports.index = function(req, res) {
+    getProductDetails(req.params.pid)
+        .then(function(json) {
+            res.json(json);
+        }, function(err) {
+            res.json({"error" : err});
+        });
+};
+```
+
+This new function invokes the ``getProductDetails`` function, and returns the JSON data to the web browser. Exit the test
+runner and start the web server using ``npm start``. Open http://localhost:4500/ in a Web browser and click on a valid
+product link. You should see a JSON object on the next page. 
+
+### Further Testing
+There are three invalid product links on this page, each illustrating three potential errors. An error output from our
+service should look like this: 
+
+```javascript
+{ "Error": {
+        "error" : "errorType",
+        "message" : "some descriptive explaination"
+    }
+}
+```
+
+1. PIDs should contain only numbers. Write a test that expects ``getProdcutDetails`` to return a JSON object with
+Error.error === "Invalid PID", and the message "Product IDs should only contain numbers."
+2. PID should be at least 9 characters in length. Write a test that expects ``getProductDetails`` to return an error
+object to cover this condition.
+3. Prodcut ID does not exist. The third product link contains a PID for a product that does not exist on this site. 
+The JSON that is produces by this code does not match other error messages. Write a test that expects ``getProductDetails``
+to normalize the error message.
 
 

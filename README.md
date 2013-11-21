@@ -265,5 +265,3 @@ object to cover this condition.
 The JSON that is produces by this code does not match other error messages. Write a test that expects ``getProductDetails``
 to normalize the error message.
 
-
-

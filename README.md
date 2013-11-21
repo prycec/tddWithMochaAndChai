@@ -46,7 +46,7 @@ To check to see if iNode and NPM are installed correctly, try this from the comm
 
 ```
 $ node -v
-v0.10.16
+v0.10.22
 $ npm -v
 v1.3.8
 ```

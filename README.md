@@ -93,180 +93,74 @@ mocha -w --reporter spec
 However, with the ``npm test`` command, mocha does not need to be installed globally.
 
 ### The First Test Cases
-For purposes of illustration, we have decided that we want to create service to go and get Product Detail data from the
-GC Commerce platform. This service will have one public function, ``getProductDetails`` that will return a promise.
-When the promise is fulfilled, it will return a json data structure with a productInfo property.
+For purposes of illustration, we'll run a simple modified fizzbuzz kata. We want a fizzbuzz function that will return an array of length 100 that contains numbers from 1 to 100. If a number is divisible by 3, we should replace it with "fizz". If it is divisible by 5, we should replace it with "buzz". If it is divisible by both 3 and 5, we should replace it with "fizzbuzz".
 
-To create the test, it is first necessary to create a stub file for the product details service. To this, a file in the
-**/routes/** is added to file system as **/routes/pd.js**. We need to add a stub that we will build on.
+To begin, we created the **/fizzbuzz** directory.
+Next, we created **/fizzbuzz/index.js**. This will be the file where we create the fizzbuzz function.
 
-pd.js listing
 
-```javascript
-/*global exports*/
-// declare a function scoped to this block
-function getProductDetails(pid) {
-
-}
-
-// export a public interface (for testing)
-exports.getProductDetails = getProductDetails;
-```
-
-Next we will write the tests in Mocha using the BDD-style interface and Node's assert library. Save this file in the
-**/tests** directory as ``pd-test.js``.
+/fizzbuzz/index.js
 
 ```javascript```
-/*global describe it*/
+module.exports = {
+    fizzbuzz: function () {
 
-var pd = require("../routes/pd");
-var assert = require("assert");
+    }
+};
 
-describe("getProductDetails", function() {
-    var promise = pd.getProductDetails('281246600');
+```
 
-    it("is a promise", function() {
-        assert.ok(promise.then);
+Next we will write the tests in Mocha using the BDD-style interface and Chai's expect library. Save this file in the
+**/tests** directory as ``fizzbuzz-test.spec.js``.
+
+
+```javascript```
+var expect = require("chai").expect;
+var fz = require("../fizzbuzz");
+
+describe("fizzbuzz test", function () {
+    it("fizzbuzz should return an array", function () {
+        expect(fz.fizzbuzz()).to.be.an("array");
     });
 });
 
 ```
 
-The first line pulls in the route file that we want to test with the public getProductDetails function. The second
-line includes Node's assert library.
+The first two lines require chai and the file that contains our fizzbuzz function.
 
-The enclosing ``describe()`` function takes a string and an anonymous function as the two arguments. It sets
-up a top level grouping for our spec reporter, allowing us to group our two related tests under a common header.
+The enclosing describe() function takes a string that will be a label for our test suite and an anonymous function as the two arguments. It sets up a top level grouping for our spec reporter, allowing us to group our two related tests under a common header.
 
-Next, we call the function that we are testing, assigning the results to a variable ``promise``. According to the
-CommonJS/PromiseA API, the return value from ``getProductDetails`` should have a method name then. Our first test
-uses Duck-typing to establish that the method return the correct type of object.
+The first test is that we expect the fizzbuzz function to return an array. The test takes two arguments, a string that will act as a label for the test, and an anonymous function where we write code that says we expect the fizzbuz function to return an array.
 
 ### Red - Green - Refactor
-Start the test runner with the command ``npm start``. Note the 8 passing tests and the one red test that is failing. Our
-stub method in ``pd.js`` does not return a promise.
+Start the test runner with the command ``npm start``. Note the 8 passing tests and the one red test that is failing. The fizzbuzz function does not do anything yet.
 
 Let's resolve that now by writing the least amount of code that we can to make the test pass. Our new listing for
-``pd.js`` looks like this:
+``/fizzbuzz/index.js`` looks like this:
 
 ```javascript
-/*global exports*/
-var Q = require('q');
-
-// declare a function scoped to this block
-function getProductDetails(pid) {
-    var deferred = new Q.defer();
-
-    // do async request here.
-    return deferred.promise;
-}
-
-exports.getProductDetails  = getProductDetails;
+    module.exports = {
+        fizzbuzz: function () {
+            var fizzBuzzArray = [];
+        }
+        return fizzBuzzArray;
+    };
 ```
-
-Our first line pulls in the library that will provide the framework for Promise API, Q. Line five, constructs the promise
-object. and line 8 we return the read-only token to the test.
 
 With this new code, our  first test passes, and we can begin to write our second test.
 
-Directly below our first test, add the following lines of code:
+Back in fizzbuzz-test.spec.js, directly below our first test, add the following lines of code:
 
 ```javascript
-    it("should be vaild JSON", function(itIsDone) {
-        promise
-            .then(function(data) {
-                assert.ok(data.productInfo);
-            }, function(err) {
-                assert.fail("expected valid json", err);
-            })
-            .done(function() {
-                itIsDone();
-            });
+    it("fizzbuzz length is correct", function () {
+        expect(fz.fizzbuzz()).to.have.length(100);
     });
 ```
 
-Now we are testing when the promise is fulfilled in our async function that the data returned is json data with a
-non-null ``productInfo`` property. 
+Now we are testing that fizzbuzz returns an array of length 100.
 
-You may also notice in our second test, we are taking a parameter to the anonymous function that we are passing as the second argument to ``it()``. This is a signal to the Mocha framework that the test is an asynchronous test. The final step in the Promise chain, the ``.done()`` method invokes this callback, signalling Mocha that the asynchronous test is complete.
-
-When the file is saved and the test suite runs again, we now have 9 passing tests and one red one. Time to fix that. 
-
-I won't go into the details, but here is the complete product details function that
-should pass the second test, and return json data
-
-```javascript
-function getProductDetails(pid) {
-    var deferred = new Q.defer();
-    var stringBuffer = "";
-    var json = {};
-    var rOptions = {
-        host: "store.digitalriver.com",
-        port: '80',
-        path: "/store/cpryce/en_US/DisplayDRProductInfo/productID." + pid + "/content.name+detailImage+price+buyLink+shortDescription+longDescription+product.variation/output.json/version.2/env=design",
-        method: 'GET'
-    };
-
-    http.get(rOptions, function (xhr) {
-        xhr.setEncoding('utf8');
-
-        xhr.on('data', function (chunk) {
-            stringBuffer += chunk;
-        });
-
-        xhr.on('end', function () {
-            try {
-                json = JSON.parse(stringBuffer);
-            } catch (e) {
-                deferred.reject("can't parse response as JSON");
-            }
-
-            deferred.resolve(json);
-        });
-
-        xhr.on("error", function(e) {
-            deferred.reject(e);
-        })
-    });
-    return deferred.promise;
-}
-```
+When the file is saved and the test suite runs again, we now have 9 passing tests and one red one. Time to fix that - it's up to you.
 
 ##Next Steps
-Add a route to the ``pd.js`` file to return JSON to a web browser: 
-
-```javascript
-exports.index = function(req, res) {
-    getProductDetails(req.params.pid)
-        .then(function(json) {
-            res.json(json);
-        }, function(err) {
-            res.json({"error" : err});
-        });
-};
-```
-
-This new function invokes the ``getProductDetails`` function, and returns the JSON data to the web browser. Exit the test
-runner and start the web server using ``npm start``. Open http://localhost:4500/ in a Web browser and click on a valid
-product link. You should see a JSON object on the next page. 
-
-### Further Testing
-There are three invalid product links on this page, each illustrating three potential errors. An error output from our
-service should look like this: 
-
-```javascript
-{ "Error": {
-        "error" : "errorType",
-        "message" : "some descriptive explaination"
-    }
-}
-```
-
-1. **PIDs should contain only numbers.** Write a test that expects ``getProdcutDetails`` to return a JSON object with
-Error.error === "Invalid PID", and the message "Product IDs should only contain numbers."
-2. **PID should be at least 9 characters in length.** Write a test that expects ``getProductDetails`` to return an error
-object to cover this condition.
-3. **Prodcut ID does not exist.** The third product link contains a PID for a product that does not exist on this site. 
-The JSON that is produces by this code does not match other error messages. Write a test that expects ``getProductDetails``
-to normalize the error message.
+Think about which additional tests you should add to complete the kata. Remember to write the failing test first, and then only the code necessary to make the test pass. Then it's back to writing another test. **Red, Green, Refactor**
 

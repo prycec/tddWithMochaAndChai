@@ -2,9 +2,6 @@ var expect = require("chai").expect;
 var fz = require("../fizzbuzz");
 
 describe("fizzbuzz test", function () {
-    it("fizzbuzz should exist", function () {
-        expect(fz.fizzbuzz).to.exist;
-    });
     it("fizzbuzz should return an array", function () {
         expect(fz.fizzbuzz()).to.be.an("array");
     });

@@ -71,8 +71,6 @@ Once you hav Node installed, to run the examples:
 > npm start
 ```
 
-Open a Web browser to http://localhost:4500
-
 ##Mocha Tests
 All of the Mocha framework tests are in the **/test** directory. ``mocha-test.j`` is an example that illustrates the
 testing framework and the default assertion library that is installed with NodJS.

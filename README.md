@@ -37,6 +37,10 @@ Mocha provided several of the project goals for a testing framework:
 
 In addition, Mocha provides a flexible UI, flexible reporting options and support for running in a browser.
 
+## What is Chai?
+[According to the Web site ...](http://chaijs.com/)
+Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
+
 ## Getting Started
 
 To run the example code, you will need to have Node.js and the Node Package Manager(NPM) installed. Please see 

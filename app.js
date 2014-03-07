@@ -4,7 +4,6 @@
  */
 var express = require('express');
 var main = require('./routes');
-var pd = require('./routes/pd');
 var http = require('http');
 var path = require('path');
 var dust = require('dustjs-linkedin');
@@ -33,8 +32,6 @@ app.use(express.logger('dev'));
 // set up routes
 app.get("/", main.index);
 
-// id is dynamic
-app.get('/product/:pid', pd.index);
 
 
 http.createServer(app).listen(app.get('port'), function(){

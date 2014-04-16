@@ -36,6 +36,7 @@ Checkout the completed tutorial and unit tests:
 ```
 git checkout tutorial-1
 ```
+
 To begin, create the skeleton module. Add a folder to the file system called `validParentheses`. Insert a file in this
 directory named `index.js`.
 

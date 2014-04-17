@@ -91,7 +91,10 @@ mocha -w --reporter spec
 However, with the ``npm test`` command, mocha does not need to be installed globally.
 
 ### The First Test Cases
-For purposes of illustration, we'll run a simple modified fizzbuzz kata. We want a fizzbuzz function that will return an array of length 100 that contains numbers from 1 to 100. If a number is divisible by 3, we should replace it with "fizz". If it is divisible by 5, we should replace it with "buzz". If it is divisible by both 3 and 5, we should replace it with "fizzbuzz".
+For purposes of illustration, we'll run a simple modified fizzbuzz kata. We want a fizzbuzz function that will return an
+array of length 100 that contains numbers from 1 to 100. If a number is divisible by 3, we should replace it with "fizz".
+If it is divisible by 5, we should replace it with "buzz". If it is divisible by both 3 and 5, we should replace it with
+"fizzbuzz".
 
 To begin, we created the **/fizzbuzz** directory.
 Next, we created **/fizzbuzz/index.js**. This will be the file where we create the fizzbuzz function.

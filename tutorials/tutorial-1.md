@@ -21,6 +21,22 @@ i.e., there are as many closing parentheses as there opening parentheses.
 ')()(' -> invalid (not nested properly)
 ```
 
+### The Tutorial
+You can complete this tutorial by following the steps outlined. I recommend that you checkout a new branch to
+complete the work. You can do this easily after have cloned the repository with the following command:
+
+```
+git checkout -b myTutorial1
+```
+
+If you want to see the completed tutorial, it is available in the tutorial-1 branch.
+
+Checkout the completed tutorial and unit tests:
+
+```
+git checkout tutorial-1
+```
+
 To begin, create the skeleton module. Add a folder to the file system called `validParentheses`. Insert a file in this
 directory named `index.js`.
 
